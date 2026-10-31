@@ -12,11 +12,11 @@ input,select,textarea,button{font:inherit;color:var(--tx);background:#0b1426;bor
 button,.btn{background:linear-gradient(90deg,var(--g),var(--c));color:#04210f;font-weight:700;border:0;cursor:pointer;width:auto;padding:10px 18px;border-radius:10px;text-decoration:none;display:inline-block}
 table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:8px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--mut)}.tw{overflow:auto}
 .flash{background:#2a2008;border:1px solid #f59e0b;border-radius:12px;padding:10px;margin-bottom:12px}
-.auth{margin:auto;width:min(420px,92vw)}.auth input{margin:6px 0}.warn{border-color:#f59e0b;background:#2a2008}
+.auth{margin:auto;width:min(420px,92vw)}.auth input{margin:6px 0}.warn{border-color:#f59e0b;background:#2a2008}.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.78rem;font-weight:700;background:#1f2d4a}.t-high,.t-Low,.t-Acidic,.t-Alkaline,.t-Dry,.t-Too{background:#7f1d1d}.t-medium,.t-Medium,.t-High{background:#78350f}.t-OK,.t-low,.t-none{background:#064e3b}ul.l{margin:6px 0;padding-left:20px}ul.l li{margin:4px 0}.msg{padding:10px 14px;border-radius:14px;margin:8px 0;white-space:pre-wrap;max-width:85%}.msg.user{background:#0e7490;margin-left:auto}.msg.assistant{background:var(--card);border:1px solid var(--line)}.done{opacity:.55;text-decoration:line-through}.over{color:#f87171}
 @media(max-width:760px){body{flex-direction:column}nav{width:100%;height:auto;position:static;display:flex;gap:6px;flex-wrap:wrap;align-items:center}}
 </style></head><body>
 {% if user %}<nav><h2>🌾 AgriXAI</h2><small>{{user.name}} · {{user.role}}</small><br><br>
-<a href="/dashboard">📊 Dashboard</a><a href="/advisor">🧠 Advisor</a><a href="/history">🕘 History</a>
+<a href="/dashboard">📊 Dashboard</a><a href="/advisor">🧠 Advisor</a><a href="/scan">📷 Crop Scan</a><a href="/assistant">💬 Assistant</a><a href="/tasks">✅ My Tasks</a><a href="/history">🕘 History</a>
 {% if user.role=='admin' %}<a href="/admin">🛡️ Admin</a><a href="/database">🗄️ Database</a>{% endif %}
 <form method="post" action="/logout"><input type="hidden" name="csrf" value="{{csrf}}"><button style="margin-top:14px">Sign out</button></form></nav>{% endif %}
 <main>{% for m in get_flashed_messages() %}<div class="flash">{{m}}</div>{% endfor %}{% block body %}{% endblock %}</main></body></html>

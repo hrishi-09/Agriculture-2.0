@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block body %}<div class="hero"><h1>✅ My Tasks</h1><p>Organise your farm work. The AI can turn it into a 7-day plan.</p></div>
+<form method="post" class="card"><input type="hidden" name="csrf" value="{{csrf}}"><input type="hidden" name="action" value="add"><div class="grid">
+<input name="title" maxlength="200" placeholder="e.g. Irrigate north field" required><input name="due" type="date"><select name="priority"><option>high</option><option selected>medium</option><option>low</option></select><button>Add task</button></div></form>
+<form method="post" class="card"><input type="hidden" name="csrf" value="{{csrf}}"><input type="hidden" name="action" value="plan"><button>🧠 Plan my week with AI</button> <small>Uses your open tasks and latest soil results.</small></form>
+{% if plan %}<div class="card"><b>Suggested 7-day plan</b><div style="white-space:pre-wrap;margin-top:8px">{{plan}}</div></div>{% endif %}
+<div class="card">{% if not items %}<small>No tasks yet. Add one above, or run the Advisor and add its recommended actions.</small>{% endif %}
+<div class="tw"><table>{% for t in items %}<tr><td class="{{'done' if t.done}}">{{t.title}}</td><td><span class="tag t-{{t.priority}}">{{t.priority}}</span></td><td class="{{'over' if t.over}}">{{t.due or '—'}}{{' (overdue)' if t.over}}</td>
+<td><form method="post" style="display:flex;gap:6px"><input type="hidden" name="csrf" value="{{csrf}}"><input type="hidden" name="id" value="{{t.id}}">
+<button name="action" value="{{'reopen' if t.done else 'done'}}">{{'Reopen' if t.done else 'Done'}}</button><button name="action" value="delete" style="background:#7f1d1d;color:#fff">Delete</button></form></td></tr>{% endfor %}</table></div></div>{% endblock %}

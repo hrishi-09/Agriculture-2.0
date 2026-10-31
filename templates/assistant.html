@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block body %}<div class="hero"><h1>💬 Farm Assistant</h1><p>Ask about your soil, crops, or how to organise your work. It knows your latest analysis, scans and tasks.</p></div>
+<div class="card">{% if not msgs %}<small>Try a question below.</small>{% endif %}{% for role,c in msgs %}<div class="msg {{role}}">{{c}}</div>{% endfor %}
+<form method="post" style="margin-top:12px"><input type="hidden" name="csrf" value="{{csrf}}"><textarea name="message" rows="3" maxlength="2000" placeholder="Ask anything about your farm..."></textarea><br><br>
+<button>Send</button> <button name="action" value="clear" style="background:#1f2d4a;color:var(--tx)">Clear chat</button></form>
+<p><small>Quick questions:</small><br>
+<form method="post" style="display:flex;gap:8px;flex-wrap:wrap"><input type="hidden" name="csrf" value="{{csrf}}">
+<button name="quick" value="What should I do first on my soil this week?">What should I do first?</button>
+<button name="quick" value="Organise my open tasks into a priority order for this week.">Organise my tasks</button>
+<button name="quick" value="How can I improve my soil health score?">Improve soil health</button>
+<button name="quick" value="Which fertiliser should I buy and how much?">Fertiliser plan</button></form></p></div>{% endblock %}

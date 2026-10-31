@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block body %}<div class="hero"><h1>📷 Crop Photo Scan</h1><p>Upload a photo of a leaf, fruit, plant or field. AI tells you what it sees and what to do next.</p></div>
+<form method="post" enctype="multipart/form-data" class="card"><input type="hidden" name="csrf" value="{{csrf}}">
+<input type="file" name="image" accept="image/*" required><br><br><input name="note" maxlength="300" placeholder="Optional note: crop name, when it started, what you already tried"><br><br><button>Analyse photo</button>
+<p><small>Tip: take a close, well-lit photo of the affected leaf or fruit. Photo analysis is an AI estimate, not a lab diagnosis.</small></p></form>
+{% if r %}{% if not r.is_plant %}<div class="card warn">⚠️ This does not look like a clear crop photo. Please try a closer, brighter picture.</div>{% endif %}
+<div class="grid"><div class="card"><small>Crop</small><div class="big">{{r.crop|default('unknown')|title}}</div><small>{{r.part}}</small></div>
+<div class="card"><small>Condition</small><div class="big" style="font-size:1.3rem">{{r.health|default('unclear')|title}}</div><small>{{r.issue}}</small></div>
+<div class="card"><small>Severity</small><div class="big"><span class="tag t-{{r.severity}}">{{r.severity}}</span></div><small>Confidence {{ '%.0f%%'|format((r.confidence or 0)|float*100) }}</small></div></div>
+<div class="card">{{r.summary}}</div>
+{% if r.see_expert %}<div class="card warn">⚠️ Please show this to a local agronomist or agriculture office before spending on treatment.</div>{% endif %}
+<div class="grid"><div class="card"><b>What I can see</b><ul class="l">{% for e in r.evidence %}<li>{{e}}</li>{% endfor %}</ul></div>
+<div class="card"><b>What to do next</b><ol class="l">{% for e in r.next_steps %}<li>{{e}}</li>{% endfor %}</ol>
+<form method="post" action="/tasks"><input type="hidden" name="csrf" value="{{csrf}}"><input type="hidden" name="action" value="addmany">{% for e in r.next_steps %}<input type="hidden" name="title" value="{{e}}">{% endfor %}<button>Add these steps to My Tasks</button></form></div>
+<div class="card"><b>Prevention</b><ul class="l">{% for e in r.prevention %}<li>{{e}}</li>{% endfor %}</ul></div></div>{% endif %}
+{% if hist %}<div class="card"><b>Recent scans</b><div class="tw"><table><tr><th>Crop</th><th>Condition</th><th>Severity</th><th>Confidence</th><th>When</th></tr>{% for h in hist %}<tr>{% for v in h %}<td>{{v}}</td>{% endfor %}</tr>{% endfor %}</table></div></div>{% endif %}{% endblock %}

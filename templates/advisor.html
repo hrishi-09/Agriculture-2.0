@@ -8,6 +8,18 @@
 <div class="card"><small>Input novelty p-value</small><div class="big">{{ '%.3f'|format(r.ood_p) }}</div></div></div>
 <div class="grid"><div class="card"><canvas id="p"></canvas></div><div class="card"><canvas id="s"></canvas></div></div>
 <div class="card">🗣️ <b>In plain words:</b> {{r.crop|title}} is suggested mainly because of <b>{{r.top[0]}}</b>, <b>{{r.top[1]}}</b> and <b>{{r.top[2]}}</b>. SHAP explains the model's behaviour, not cause and effect — verify with an expert.</div>
+
+{% set R=r.report %}<div class="hero" style="margin-top:6px"><h1>Soil &amp; farm report for {{R.crop|title}}</h1><p>Indicative guidance. Confirm doses with a lab soil test.</p></div>
+<div class="grid"><div class="card"><small>Soil health score</small><div class="big">{{R.score}}/100</div><small>{{R.label}}</small></div>
+<div class="card"><small>Disease risk (weather)</small><div class="big"><span class="tag t-{{R.disease.level}}">{{R.disease.level}}</span></div><small>{{R.disease.advice}}</small></div>
+<div class="card"><small>Water</small><div class="big"><span class="tag t-{{R.water.status.split()[0]}}">{{R.water.status}}</span></div><small>{{R.water.advice}}</small></div>
+<div class="card"><small>Soil pH</small><div class="big"><span class="tag t-{{R.ph.status}}">{{R.ph.status}}</span></div><small>{{R.ph.advice}}</small></div></div>
+<div class="card"><b>Nutrients vs. what {{R.crop|title}} needs</b><div class="tw"><table><tr><th>Nutrient</th><th>Yours</th><th>Target</th><th>Status</th><th>What to do</th></tr>
+{% for n in R.nutrients %}<tr><td>{{n.nutrient}}</td><td>{{n.value}}</td><td>{{n.target}}</td><td><span class="tag t-{{n.status}}">{{n.status}}</span></td><td>{{n.advice}}</td></tr>{% endfor %}</table></div><small>Climate: {{R.climate}}</small></div>
+<div class="card"><b>Other good crops for this soil</b><div class="tw"><table><tr><th>Crop</th><th>Probability</th></tr>{% for c,p in r.top3 %}<tr><td>{{c|title}}</td><td>{{ '%.1f%%'|format(p*100) }}</td></tr>{% endfor %}</table></div></div>
+<form method="post" action="/tasks" class="card"><input type="hidden" name="csrf" value="{{csrf}}"><input type="hidden" name="action" value="addmany"><b>Recommended actions</b>
+<ul class="l">{% for a in R.actions %}<li><label><input type="checkbox" name="title" value="{{a.text}}" checked style="width:auto"> <span class="tag t-{{a.priority}}">{{a.priority}}</span> {{a.text}}</label></li>{% endfor %}</ul>
+<button>Add selected to My Tasks</button></form>
 <script>const P={{r.probs|tojson}},S={{r.shap|tojson}};
 new Chart(p,{type:'bar',data:{labels:Object.keys(P),datasets:[{label:'Class probability',data:Object.values(P),backgroundColor:'#22d3ee'}]}});
 new Chart(s,{type:'bar',data:{labels:Object.keys(S),datasets:[{label:'SHAP for predicted crop',data:Object.values(S),backgroundColor:Object.values(S).map(v=>v>=0?'#34d399':'#f87171')}]},options:{indexAxis:'y'}});</script>{% endif %}{% endblock %}
