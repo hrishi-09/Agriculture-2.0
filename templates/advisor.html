@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block body %}<div class="hero"><h1>Crop &amp; Yield Advisor</h1><p>Prediction + probability + explanation</p></div>
+<form method="post" class="card"><input type="hidden" name="csrf" value="{{csrf}}"><div class="grid">
+{% for k,(lo,hi,df) in RNG.items() %}<div><small>{{k}}: <b id="v{{k}}">{{x[k]}}</b></small><input type="range" name="{{k}}" min="{{lo}}" max="{{hi}}" step="any" value="{{x[k]}}" oninput="document.getElementById('v{{k}}').textContent=(+this.value).toFixed(1)"></div>{% endfor %}
+</div><br><button>Analyse</button></form>
+{% if r %}{% if r.unsure %}<div class="card warn">⚠️ I am not sure — inputs are unusual or probabilities are spread out. Please consult an agronomist.</div>{% endif %}
+<div class="grid"><div class="card"><small>Recommended crop</small><div class="big">{{r.crop|title}}</div><small>{{ '%.1f%%'|format(r.conf*100) }} probability</small></div>
+<div class="card"><small>Expected yield</small><div class="big">{{ '%.2f'|format(r.yield_t) }} t/ha</div><small>95% PI ± {{ '%.2f'|format(r.ci) }}</small></div>
+<div class="card"><small>Input novelty p-value</small><div class="big">{{ '%.3f'|format(r.ood_p) }}</div></div></div>
+<div class="grid"><div class="card"><canvas id="p"></canvas></div><div class="card"><canvas id="s"></canvas></div></div>
+<div class="card">🗣️ <b>In plain words:</b> {{r.crop|title}} is suggested mainly because of <b>{{r.top[0]}}</b>, <b>{{r.top[1]}}</b> and <b>{{r.top[2]}}</b>. SHAP explains the model's behaviour, not cause and effect — verify with an expert.</div>
+<script>const P={{r.probs|tojson}},S={{r.shap|tojson}};
+new Chart(p,{type:'bar',data:{labels:Object.keys(P),datasets:[{label:'Class probability',data:Object.values(P),backgroundColor:'#22d3ee'}]}});
+new Chart(s,{type:'bar',data:{labels:Object.keys(S),datasets:[{label:'SHAP for predicted crop',data:Object.values(S),backgroundColor:Object.values(S).map(v=>v>=0?'#34d399':'#f87171')}]},options:{indexAxis:'y'}});</script>{% endif %}{% endblock %}

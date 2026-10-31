@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block body %}<div class="hero"><h1>Dashboard</h1><p>Statistics and model performance</p></div>
+<div class="grid"><div class="card"><small>Predictions</small><div class="big">{{d.n}}</div></div>
+<div class="card"><small>Mean confidence (95% CI)</small><div class="big">{{ '%.1f%%'|format(d.mean*100) if d.mean else '—' }}</div>{% if d.ci %}<small>{{ '%.1f'|format(d.ci[0]*100) }}–{{ '%.1f'|format(d.ci[1]*100) }}%</small>{% endif %}</div>
+<div class="card"><small>Avg yield (t/ha)</small><div class="big">{{ '%.2f'|format(d.yld) if d.yld else '—' }}</div></div>
+<div class="card"><small>Unusual-input flags</small><div class="big">{{d.flags}}</div></div></div>
+<div class="grid"><div class="card"><canvas id="a"></canvas></div><div class="card"><canvas id="b"></canvas></div></div>
+<div class="card"><b>Held-out test accuracy</b><div class="grid" style="margin-top:10px">
+<div><small>Random Forest</small><div class="big">{{ '%.1f%%'|format(d.metrics.rf_acc*100) }}</div></div><div><small>Neural net (MLP)</small><div class="big">{{ '%.1f%%'|format(d.metrics.nn_acc*100) }}</div></div>
+<div><small>Ensemble</small><div class="big">{{ '%.1f%%'|format(d.metrics.ens_acc*100) }}</div></div><div><small>Yield R²</small><div class="big">{{ '%.3f'|format(d.metrics.yield_r2) }}</div></div></div>
+<small>Trained on synthetic demo data until real datasets are loaded.</small></div>
+<script>const crops={{d.crops|tojson}},conf={{d.conf|tojson}};
+new Chart(a,{type:'doughnut',data:{labels:Object.keys(crops),datasets:[{data:Object.values(crops)}]},options:{plugins:{title:{display:true,text:'Recommended crops',color:'#e6edf7'}}}});
+const bins=Array(10).fill(0);conf.forEach(v=>bins[Math.min(9,Math.floor(v*10))]++);
+new Chart(b,{type:'bar',data:{labels:bins.map((_,i)=>i*10+'-'+(i*10+10)+'%'),datasets:[{label:'Confidence distribution',data:bins,backgroundColor:'#34d399'}]}});</script>{% endblock %}

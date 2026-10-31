@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AgriXAI</title><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0b1220;--card:#111a2e;--line:#1f2d4a;--tx:#e6edf7;--mut:#8ea0bf;--g:#34d399;--c:#22d3ee}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,sans-serif;background:var(--bg);color:var(--tx);display:flex;min-height:100vh}
+nav{width:230px;background:#0a0f1c;border-right:1px solid var(--line);padding:20px;position:sticky;top:0;height:100vh}
+nav h2{margin:0 0 20px}nav a{display:block;padding:10px 14px;border-radius:10px;color:var(--mut);text-decoration:none;margin:4px 0}nav a:hover{background:var(--card);color:var(--tx)}
+main{flex:1;padding:24px;max-width:1200px}.hero{padding:26px;border-radius:20px;background:linear-gradient(135deg,#065f46,#0e7490 55%,#1e1b4b);margin-bottom:18px}
+.hero h1{margin:0}.hero p{margin:6px 0 0;opacity:.85}.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}.card small{color:var(--mut)}.big{font-size:1.8rem;font-weight:700;color:var(--g)}
+input,select,textarea,button{font:inherit;color:var(--tx);background:#0b1426;border:1px solid var(--line);border-radius:10px;padding:10px;width:100%}
+button,.btn{background:linear-gradient(90deg,var(--g),var(--c));color:#04210f;font-weight:700;border:0;cursor:pointer;width:auto;padding:10px 18px;border-radius:10px;text-decoration:none;display:inline-block}
+table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:8px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--mut)}.tw{overflow:auto}
+.flash{background:#2a2008;border:1px solid #f59e0b;border-radius:12px;padding:10px;margin-bottom:12px}
+.auth{margin:auto;width:min(420px,92vw)}.auth input{margin:6px 0}.warn{border-color:#f59e0b;background:#2a2008}
+@media(max-width:760px){body{flex-direction:column}nav{width:100%;height:auto;position:static;display:flex;gap:6px;flex-wrap:wrap;align-items:center}}
+</style></head><body>
+{% if user %}<nav><h2>🌾 AgriXAI</h2><small>{{user.name}} · {{user.role}}</small><br><br>
+<a href="/dashboard">📊 Dashboard</a><a href="/advisor">🧠 Advisor</a><a href="/history">🕘 History</a>
+{% if user.role=='admin' %}<a href="/admin">🛡️ Admin</a><a href="/database">🗄️ Database</a>{% endif %}
+<form method="post" action="/logout"><input type="hidden" name="csrf" value="{{csrf}}"><button style="margin-top:14px">Sign out</button></form></nav>{% endif %}
+<main>{% for m in get_flashed_messages() %}<div class="flash">{{m}}</div>{% endfor %}{% block body %}{% endblock %}</main></body></html>
+{% macro tbl(cols,rows) %}<div class="tw"><table><tr>{% for c in cols %}<th>{{c}}</th>{% endfor %}</tr>{% for r in rows %}<tr>{% for v in r %}<td>{{v}}</td>{% endfor %}</tr>{% endfor %}</table></div>{% endmacro %}

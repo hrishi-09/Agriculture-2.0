@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% from "base.html" import tbl %}{% block body %}<div class="hero"><h1>Database Management</h1><p>Browse, export, query (read-only)</p></div>
+<div class="card"><a class="btn" href="?table=users">users</a> <a class="btn" href="?table=predictions">predictions</a> <a class="btn" href="?table={{t}}&export=1">Export {{t}}.csv</a><br><br>{{ tbl(cols,rows) }}</div>
+<div class="card"><form method="post"><input type="hidden" name="csrf" value="{{csrf}}"><input type="hidden" name="table" value="{{t}}"><textarea name="sql" rows="3">{{q}}</textarea><br><br><button>Run SELECT</button></form>
+{% if res %}<br>{{ tbl(res[0],res[1]) }}{% endif %}</div>{% endblock %}
