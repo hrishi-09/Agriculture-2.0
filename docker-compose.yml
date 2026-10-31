@@ -12,5 +12,6 @@ services:
       SECRET_KEY: ${SECRET_KEY:-dev-change-me}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@agrixai.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-ChangeMe123!}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     depends_on: {db: {condition: service_healthy}}
 volumes: {pgdata: {}}
