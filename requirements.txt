@@ -1,0 +1,11 @@
+flask==3.0.3
+gunicorn==22.0.0
+pandas
+numpy
+scipy
+scikit-learn
+shap
+sqlalchemy==2.0.36
+psycopg2-binary
+bcrypt
+joblib
